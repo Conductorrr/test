@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+    //类完全可以看作构造函数的另一种写法
+
+    //class只是一个语法糖，让对象原型的写法更加清晰、更像面向对象编程的语法而已。很多就和ES5一样的
+
+    class Point{
+        constructor(x,y) {
+            this.x = x
+            this.y = y
+        }
+        toString() {
+            return '('+this.x+','+this.y+')'
+        }
+    }
+
+    var p = new Point(1,2)
+
+    /*
+    通过class关键字定义类
+
+    constructor方法，就是构造方法，对应ES5的构造函数Point
+    constructor方法是类的默认方法，通过new创建实例对象时自动调用该方法，（默认）返回实例对象（即this，this就代表实例对象）
+    一个类必须有constructor方法（如果没有显式定义，默认添加一个空的constructor方法）
+    
+    类的所有方法都定义在类的prototype属性上面
+
+    实例的属性除非显式定义在其本身（即定义在this上），否则都是定义在原型上（即定义在class上）
+    */
+
+    typeof Point//function
+    Point === Point.prototype.constructor // true
+    //（类完全可以看作构造函数的另一种写法）
+
+    //静态方法：
+    //加上static的方法，可以直接在类上调用，但不能在实例上调用（如果调用会抛出一个错误，表示不存在该方法）
+    class Foo{
+        static classMethod() {
+            return 'hello'
+        }
+    }
+    Foo.classMethod() //'hello'
+    var f = new Foo()
+    f.classMethod()//报错
+
+    //父类的静态方法，可以被子类继承
+    class Fu {
+        static classMethod() {
+            return 'hello';
+        }
+    }
+    class Zi extends Fu {
+    }
+    Zi.classMethod() // 'hello'
+
+    //静态属性：
+    //ES6明确规定，class内部只有静态方法，没有静态属性
+    //现在有一个提案提供了类的静态属性
+    class Foo1{
+        static myStaticProp = 42
+    }
+    Foo1.myStaticProp //42  
+
+    /*
+    私有方法、私有属性：
+    是只能在类的内部访问的方法和属性
+    外部不能访问，因此实例化对象既不能获得值，也不能设定值，应该返回undefined，甚至应该在实例化之后，并不知道有这个属性存在
+    不能被继承，因此extends后子类不具备该属性
+
+    ES6不提供，只能通过变通方法模拟实现。。。。几种方法但好像有缺陷
+
+    现在有一个提案为class加了私有属性、私有方法：在属性名、方法名之前，加#
+    */
+
+
+
+    //由于类的方法都定义在prototype对象上面，所以类的新方法可以添加在prototype对象上面
+    //Object.assign方法可以很方便地一次向类添加多个方法
+    Object.assign(Point.prototype,{
+        sayHi() {
+            console.log('hi')
+        },
+        sayYes() {
+            console.log('yes')
+        }
+    })
+
+    //可以使用get和set关键字，对某个属性设置取值函数和存值函数，定义该属性的存取行为（ES5中用Object.defineProperty来定义访问器属性）
+    //prop属性有对应的取值函数和存值函数
+    class MyClass {
+        constructor() {
+            // ...
+        }
+        get prop() {
+            return 'getter';
+        }
+        set prop(value) {
+            console.log('setter: '+value);
+        }
+    }
+    let inst = new MyClass();
+    inst.prop = 123;// setter: 123
+    inst.prop// 'getter'
+
+    </script>
+</body>
+</html>
